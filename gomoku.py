@@ -1,40 +1,61 @@
 #!/usr/bin/env python
-
 import wx
-
+import gomokumodule
 class gomokuFrame(wx.Frame):
 	def __init__(self, parent):
-		wx.Frame.__init__(self, parent, wx.ID_ANY, "Gomoku Game", size=(420, 440))
+		wx.Frame.__init__(self, parent, wx.ID_ANY, "Gomoku Game", size=(700, 700))
 		self.panel = wx.Panel(self)
 		self.panel.Bind(wx.EVT_PAINT, self.on_paint) 
-         
-		for l in range(19):
-			for i in range(19):
-				self.btn = wx.Button(self.panel, pos=(20*l+20, 20*i+20),size=(20,20))
-				self.btn.Bind(wx.EVT_BUTTON, self.OnClick)
-		
-	def OnClick(self, e):
-		self.btn.Show(False)
 		
 		
-	def on_paint(self, event):
+		self.board = []
+		for i in range(19):
+			self.board.append([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+		self.buttons = []
+		for i in range(19):
+			currentRow = []
+			for j in range(19):
+				currentButton = wx.Button(self.panel, pos=(30*i+20,30*j+20),size=(20,20))
+				currentButton.x = i
+				currentButton.y = j
+				currentButton.Bind(wx.EVT_BUTTON, self.OnPlay)
+				currentRow.append(currentButton)
+			self.buttons.append(currentRow)
+				
+		self.player = 1
+	
+	def OnPlay(self, e):
+		clickedButton = e.GetEventObject()
+		clickedButton.Show(False)
+		x = clickedButton.x
+		y = clickedButton.y
+		self.board[x][y] = self.player
+		
+		if self.player == 1:
+			self.blackPictureFile = wx.Image("black.png", wx.BITMAP_TYPE_ANY)
+			self.blackPictureBitmap = self.blackPictureFile.ConvertToBitmap()
+			image = wx.ImageFromBitmap(self.blackPictureBitmap)
+			image = image.Scale(17, 17, wx.IMAGE_QUALITY_HIGH)
+			self.blackPictureBitmap = wx.BitmapFromImage(image)
+			self.blackPicture = wx.StaticBitmap(self, wx.ID_ANY, self.blackPictureBitmap, pos=(30*x+26.5, 30*y+27))
+		elif self.player == -1:
+			self.blackPictureFile = wx.Image("white.png", wx.BITMAP_TYPE_ANY)
+			self.blackPictureBitmap = self.blackPictureFile.ConvertToBitmap()
+			image = wx.ImageFromBitmap(self.blackPictureBitmap)
+			image = image.Scale(17, 17, wx.IMAGE_QUALITY_HIGH)
+			self.blackPictureBitmap = wx.BitmapFromImage(image)
+			self.blackPicture = wx.StaticBitmap(self, wx.ID_ANY, self.blackPictureBitmap, pos=(30*x+26.5, 30*y+27))
+		gomokumodule.test_lines(self.board)
+		self.player *= -1
+		
+	def on_paint(self, e):
 		dc = wx.PaintDC(self.panel)
-		#for i in range(17):
-		#	dc.DrawLine(25, i*20+45, 405, i*20+40)
-		#	dc.SetPen(wx.Pen('black'))
-		#for i in range(17):
-		#	dc.DrawLine(i*20+45, 25, i*20+45, 405)
-		#	dc.SetPen(wx.Pen('black'))
-		#
-		#dc.DrawLine(25, 25, 405, 25)
-		#dc.DrawLine(25, 405, 405, 405)
-		#dc.DrawLine(25, 25, 25, 405)
-		#dc.DrawLine(405, 25, 405, 405)
-		for x in range(19):
-			for y in range(19): 
-				r = 8
-				dc.DrawCircle(x*20+35, y*20+35, r)
-		
+		for i in range(19):
+			dc.DrawLine(35, i*30+35, 570, i*30+35)
+			dc.SetPen(wx.Pen('black'))
+		for i in range(19):
+			dc.DrawLine(i*30+35, 35, i*30+35, 570)
+			dc.SetPen(wx.Pen('black'))
 		
 		
 # ------------------------------ Main Program Below --------------------------------------
