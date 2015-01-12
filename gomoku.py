@@ -3,10 +3,13 @@ import wx
 import gomokumodule
 class gomokuFrame(wx.Frame):
 	def __init__(self, parent):
-		wx.Frame.__init__(self, parent, wx.ID_ANY, "Gomoku Game", size=(700, 700))
+		wx.Frame.__init__(self, parent, wx.ID_ANY, "Gomoku Game", size=(625, 700))
 		self.panel = wx.Panel(self)
 		self.panel.Bind(wx.EVT_PAINT, self.on_paint) 
 		
+		self.player1 = wx.StaticText(self.panel, label="Black's term", pos=(40, 600))
+		self.player2 = wx.StaticText(self.panel, label="White's term", pos=(500, 600))
+		self.player2.Show(False)
 		
 		self.board = []
 		for i in range(19):
@@ -38,6 +41,8 @@ class gomokuFrame(wx.Frame):
 			image = image.Scale(17, 17, wx.IMAGE_QUALITY_HIGH)
 			self.blackPictureBitmap = wx.BitmapFromImage(image)
 			self.blackPicture = wx.StaticBitmap(self, wx.ID_ANY, self.blackPictureBitmap, pos=(30*x+26.5, 30*y+27))
+			self.player1.Show(False)
+			self.player2.Show(True)
 		elif self.player == -1:
 			self.blackPictureFile = wx.Image("white.png", wx.BITMAP_TYPE_ANY)
 			self.blackPictureBitmap = self.blackPictureFile.ConvertToBitmap()
@@ -45,6 +50,9 @@ class gomokuFrame(wx.Frame):
 			image = image.Scale(17, 17, wx.IMAGE_QUALITY_HIGH)
 			self.blackPictureBitmap = wx.BitmapFromImage(image)
 			self.blackPicture = wx.StaticBitmap(self, wx.ID_ANY, self.blackPictureBitmap, pos=(30*x+26.5, 30*y+27))
+			self.player1.Show(True)
+			self.player2.Show(False)
+		
 		gomokumodule.test_lines(self.board)
 		self.player *= -1
 		
